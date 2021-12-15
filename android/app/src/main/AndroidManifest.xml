@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="es.ugr.defc.defc_barcode_scanner">
    <application
-        android:label="defc_barcode_scanner"
+        android:label="Escáner TUI"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
