@@ -1,5 +1,4 @@
 import 'package:defc_barcode_scanner/login_controller.dart';
-import 'package:defc_barcode_scanner/main.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
