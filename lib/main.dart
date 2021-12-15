@@ -1,6 +1,5 @@
 import 'package:after_layout/after_layout.dart';
 import 'package:defc_barcode_scanner/home_page.dart';
-import 'package:defc_barcode_scanner/login_controller.dart';
 import 'package:defc_barcode_scanner/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -8,7 +7,7 @@ import 'package:googleapis/drive/v3.dart';
 import 'package:googleapis/sheets/v4.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-final GoogleSignIn _googleSignIn = GoogleSignIn(
+final GoogleSignIn googleSignIn = GoogleSignIn(
   scopes: <String>[DriveApi.driveFileScope, SheetsApi.spreadsheetsScope],
 );
 
@@ -41,7 +40,33 @@ class Splash extends StatefulWidget {
 }
 
 class SplashState extends State<Splash> with AfterLayoutMixin<Splash> {
-  Future checkFirstRun() async {
+  GoogleSignInAccount? _currentUser;
+
+  @override
+  void initState() {
+    super.initState();
+    googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) {
+      setState(() {
+        _currentUser = account;
+      });
+      if (_currentUser != null) {
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (context) => HomePage(
+                  title: 'Eeee',
+                )));
+      }
+    });
+  }
+
+  void checkFirstRun() async {
+    if (await googleSignIn.signInSilently() != null) {
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (context) => HomePage(
+                title: 'Eeee',
+              )));
+      return;
+    }
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool _run = (prefs.getBool('isFirstRun') ?? true);
 
@@ -55,6 +80,8 @@ class SplashState extends State<Splash> with AfterLayoutMixin<Splash> {
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => LoginPage()));
     }
+
+    return;
   }
 
   @override
