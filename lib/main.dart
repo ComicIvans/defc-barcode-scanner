@@ -7,10 +7,6 @@ import 'package:googleapis/drive/v3.dart';
 import 'package:googleapis/sheets/v4.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-final GoogleSignIn googleSignIn = GoogleSignIn(
-  scopes: <String>[DriveApi.driveFileScope, SheetsApi.spreadsheetsScope],
-);
-
 void main() {
   runApp(const MyApp());
 }
@@ -27,7 +23,7 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Roboto',
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: const Splash(),
+      home: Splash(),
     );
   }
 }
@@ -40,6 +36,9 @@ class Splash extends StatefulWidget {
 }
 
 class SplashState extends State<Splash> with AfterLayoutMixin<Splash> {
+  final GoogleSignIn googleSignIn = GoogleSignIn(
+    scopes: <String>[DriveApi.driveFileScope, SheetsApi.spreadsheetsScope],
+  );
   GoogleSignInAccount? _currentUser;
 
   @override
@@ -51,9 +50,7 @@ class SplashState extends State<Splash> with AfterLayoutMixin<Splash> {
       });
       if (_currentUser != null) {
         Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (context) => HomePage(
-                  title: 'Eeee',
-                )));
+            builder: (context) => HomePage(googleSignIn: googleSignIn)));
       }
     });
   }
@@ -61,9 +58,7 @@ class SplashState extends State<Splash> with AfterLayoutMixin<Splash> {
   void checkFirstRun() async {
     if (await googleSignIn.signInSilently() != null) {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) => HomePage(
-                title: 'Eeee',
-              )));
+          builder: (context) => HomePage(googleSignIn: googleSignIn)));
       return;
     }
 
@@ -72,13 +67,13 @@ class SplashState extends State<Splash> with AfterLayoutMixin<Splash> {
 
     if (_run) {
       await prefs.setBool('isFirstRun', false);
-      final page = LoginPage();
+      final loginPage = LoginPage(googleSignIn: googleSignIn);
       Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (context) => page));
-      page.showHelp(context);
+          .pushReplacement(MaterialPageRoute(builder: (context) => loginPage));
+      loginPage.showHelp(context);
     } else {
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => LoginPage()));
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (context) => LoginPage(googleSignIn: googleSignIn)));
     }
 
     return;

@@ -18,3 +18,4 @@ samples, guidance on mobile development, and a full API reference.
 ## Al cambiar de SO escribir en la terminal:
 1. flutter clean
 2. flutter pub cache repair
+3. Reiniciar VS Code

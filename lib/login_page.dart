@@ -1,9 +1,11 @@
 import 'package:defc_barcode_scanner/home_page.dart';
 import 'package:flutter/material.dart';
-import 'package:defc_barcode_scanner/main.dart' as main;
+import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginPage extends StatelessWidget {
-  LoginPage({Key? key}) : super(key: key);
+  const LoginPage({Key? key, required this.googleSignIn}) : super(key: key);
+
+  final GoogleSignIn googleSignIn;
 
   @override
   Widget build(BuildContext context) {
@@ -31,9 +33,8 @@ class LoginPage extends StatelessWidget {
                 heroTag: 'Continuar',
                 onPressed: () {
                   Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (context) => HomePage(
-                            title: 'Eeee',
-                          )));
+                      builder: (context) =>
+                          HomePage(googleSignIn: GoogleSignIn())));
                 },
                 label: const Text('Continuar sin iniciar sesión'),
               ),
@@ -41,12 +42,11 @@ class LoginPage extends StatelessWidget {
               FloatingActionButton.extended(
                 heroTag: 'Google',
                 onPressed: () async {
-                  final account = await main.googleSignIn.signIn();
+                  final account = await googleSignIn.signIn();
                   if (account != null) {
                     Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (context) => HomePage(
-                              title: 'Eeee',
-                            )));
+                        builder: (context) =>
+                            HomePage(googleSignIn: googleSignIn)));
                   }
                 },
                 icon: Image.asset(

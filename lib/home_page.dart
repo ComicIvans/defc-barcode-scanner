@@ -1,19 +1,22 @@
+import 'package:after_layout/after_layout.dart';
+import 'package:defc_barcode_scanner/sheet_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key, required this.title}) : super(key: key);
+  const HomePage({Key? key, required this.googleSignIn}) : super(key: key);
 
-  final String title;
+  final GoogleSignIn googleSignIn;
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  String _scanBarcode = 'Unknown';
+class _HomePageState extends State<HomePage> with AfterLayoutMixin<HomePage> {
+  String _scanBarcode = 'Desconocido';
 
   @override
   void initState() {
@@ -25,7 +28,7 @@ class _HomePageState extends State<HomePage> {
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
       barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
-          '#ff6666', 'Cancel', true, ScanMode.BARCODE);
+          '#ff6666', 'Cancelar', true, ScanMode.BARCODE);
     } on PlatformException {
       barcodeScanRes = 'Failed to get platform version.';
     }
@@ -43,24 +46,28 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'Barcode:',
-            ),
-            Text(
-              '$_scanBarcode',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
-      ),
+      body: Center(child: Text(_scanBarcode)),
       floatingActionButton: FloatingActionButton(
         onPressed: () => scanBarcode(),
         child: const Icon(Icons.add),
       ),
     );
   }
+
+  void checkSelectedSheet(context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String _sheet = (prefs.getString('selectedSheet') ?? '');
+
+    if (widget.googleSignIn.currentUser != null && _sheet == '') {
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) =>
+              SheetSelector(googleSignIn: widget.googleSignIn)));
+      return;
+    }
+
+    return;
+  }
+
+  @override
+  void afterFirstLayout(BuildContext context) => checkSelectedSheet(context);
 }
