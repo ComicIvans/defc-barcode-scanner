@@ -1,9 +1,11 @@
 import 'package:after_layout/after_layout.dart';
 import 'package:defc_barcode_scanner/sheet_selector.dart';
+import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:googleapis/drive/v3.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
@@ -59,9 +61,11 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin<HomePage> {
     String _sheet = (prefs.getString('selectedSheet') ?? '');
 
     if (widget.googleSignIn.currentUser != null && _sheet == '') {
+      final driveApi =
+          DriveApi((await widget.googleSignIn.authenticatedClient())!);
       Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) =>
-              SheetSelector(googleSignIn: widget.googleSignIn)));
+          builder: (context) => SheetSelector(
+              googleSignIn: widget.googleSignIn, driveApi: driveApi)));
       return;
     }
 

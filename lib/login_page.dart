@@ -42,11 +42,29 @@ class LoginPage extends StatelessWidget {
               FloatingActionButton.extended(
                 heroTag: 'Google',
                 onPressed: () async {
-                  final account = await googleSignIn.signIn();
-                  if (account != null) {
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (context) =>
-                            HomePage(googleSignIn: googleSignIn)));
+                  try {
+                    final account = await googleSignIn.signIn();
+                    if (account != null) {
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (context) =>
+                              HomePage(googleSignIn: googleSignIn)));
+                    }
+                  } catch (e) {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: const Text('Error'),
+                            content: Text(e.toString()),
+                            actions: [
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('Chido')),
+                            ],
+                          );
+                        });
                   }
                 },
                 icon: Image.asset(
@@ -79,7 +97,7 @@ class LoginPage extends StatelessWidget {
           return AlertDialog(
             title: const Text('Ayuda'),
             content: const Text(
-                'La finalidad de esta aplicación es registrar la asistencia directamente en una hoja de cálculo de Google con un código preparado para ello. Por eso la opción preferida es la de iniciar sesión con una cuenga @go.ugr.es. Sin embargo, si esta opción no es viable, se ofrece la posibilidad de guardar localmente el registro de asistencia.'),
+                'La finalidad de esta aplicación es registrar la asistencia directamente en una hoja de cálculo de Google con un código preparado para ello. Por eso la opción preferida es la de iniciar sesión con una cuenta @go.ugr.es. Sin embargo, si esta opción no es viable, se ofrece la posibilidad de guardar localmente el registro de asistencia.'),
             actions: [
               TextButton(
                   onPressed: () {

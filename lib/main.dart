@@ -37,7 +37,7 @@ class Splash extends StatefulWidget {
 
 class SplashState extends State<Splash> with AfterLayoutMixin<Splash> {
   final GoogleSignIn googleSignIn = GoogleSignIn(
-    scopes: <String>[DriveApi.driveFileScope, SheetsApi.spreadsheetsScope],
+    scopes: <String>[DriveApi.driveScope, SheetsApi.spreadsheetsScope],
   );
   GoogleSignInAccount? _currentUser;
 
