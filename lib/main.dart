@@ -87,9 +87,9 @@ class SplashState extends State<Splash> with AfterLayoutMixin<Splash> {
     return Scaffold(
         body: Center(
             child: Image.asset(
-      'assets/images/defc_white.png',
-      height: 250,
-      width: 250,
-    )));
+              'assets/images/defc_white.png',
+              height: 250,
+              width: 250,
+            )));
   }
 }
